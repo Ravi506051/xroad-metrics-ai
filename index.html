@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>X-Road Metrics Dashboard</title>
+<style>
+:root{--bg:#f4f6f8;--card:#fff;--ink:#16202a;--mute:#6b7785;--line:#dfe4ea;--acc:#0b5cab;--ok:#1a8a5a;--bad:#c0392b}
+@media(prefers-color-scheme:dark){:root{--bg:#10161c;--card:#18212a;--ink:#e6ecf2;--mute:#8b98a6;--line:#27323d;--acc:#5aa6ee;--ok:#3ecf8e;--bad:#ff6b5b}}
+*{box-sizing:border-box}body{margin:0;font:14px/1.5 system-ui,sans-serif;background:var(--bg);color:var(--ink)}
+header{display:flex;align-items:center;gap:16px;padding:14px 24px;background:var(--card);border-bottom:1px solid var(--line);flex-wrap:wrap}
+header b{font-size:17px}header nav{margin-left:auto;display:flex;gap:14px}header a{color:var(--acc);text-decoration:none;font-weight:500}
+main{max-width:1100px;margin:0 auto;padding:20px 16px 40px}
+.note{background:var(--card);border-left:4px solid var(--acc);padding:10px 14px;border-radius:6px;color:var(--mute);margin-bottom:18px}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:16px}
+.kpi small{color:var(--mute)}.kpi div{font-size:28px;font-weight:600;margin-top:2px}
+.grid{display:grid;grid-template-columns:2fr 1fr;gap:12px;margin-top:12px}@media(max-width:800px){.grid{grid-template-columns:1fr}}
+h2{font-size:15px;margin:0 0 10px}
+svg{width:100%;height:auto;display:block}
+.bar{margin:8px 0}.bar span{display:flex;justify-content:space-between;font-size:13px}.bar i{display:block;height:7px;border-radius:4px;background:var(--acc);margin-top:3px}
+.tw{overflow:auto}table{width:100%;border-collapse:collapse}th,td{text-align:left;padding:8px 10px;border-bottom:1px solid var(--line);white-space:nowrap}th{color:var(--mute);font-weight:500}
+.ok{color:var(--ok)}.bad{color:var(--bad)}
+select,input{padding:6px 9px;border:1px solid var(--line);border-radius:6px;background:var(--bg);color:inherit;font:inherit}
+.tools{display:flex;gap:8px;margin-bottom:10px;flex-wrap:wrap}
+</style></head><body>
+<header><b>X-Road Metrics</b><span style="color:var(--mute)">Operational monitoring dashboard</span><nav><a href="/">Dashboard</a><a href="/chat.html">AI Chat</a></nav></header>
+<main>
+<div class="note">Ye demo data hai. Asli X-Road data ke liye backend (collector + MongoDB/PostgreSQL) alag server par chalao aur <code>fetch('/api/metrics')</code> ko usse jodo.</div>
+<div class="kpis" id="kpis"></div>
+<div class="grid">
+  <div class="card"><h2>Requests (last 14 days)</h2><svg id="chart" viewBox="0 0 640 220"></svg></div>
+  <div class="card"><h2>Top services</h2><div id="top"></div></div>
+</div>
+<div class="card" style="margin-top:12px"><h2>Recent queries</h2>
+  <div class="tools"><select id="st"><option value="">All status</option><option>success</option><option>failed</option></select><input id="q" placeholder="Search member / service"></div>
+  <div class="tw"><table><thead><tr><th>Time</th><th>Client</th><th>Service</th><th>Provider</th><th>ms</th><th>Status</th></tr></thead><tbody id="rows"></tbody></table></div></div>
+</main>
+<script>
+let seed=7;const rnd=()=>(seed=(seed*16807)%2147483647)/2147483647;
+const members=['EE/GOV/70000001','EE/COM/10001234','EE/GOV/70006317','EE/COM/10428512','EE/NGO/80012345'];
+const services=['getPerson','getCompany','getVehicle','getTaxStatus','getAddress','getEducation'];
+const days=[...Array(14)].map((_,i)=>{const d=new Date();d.setDate(d.getDate()-13+i);return{d:d.toLocaleDateString('en',{day:'numeric',month:'short'}),n:Math.round(8000+rnd()*6000+i*220)}});
+const rows=[...Array(40)].map((_,i)=>({t:new Date(Date.now()-i*420000).toLocaleTimeString('en',{hour:'2-digit',minute:'2-digit'}),c:members[Math.floor(rnd()*5)],s:services[Math.floor(rnd()*6)],p:members[Math.floor(rnd()*5)],ms:Math.round(40+rnd()*400),ok:rnd()>.07}));
+const total=days.reduce((a,b)=>a+b.n,0),okRate=(rows.filter(r=>r.ok).length/rows.length*100).toFixed(1),avg=Math.round(rows.reduce((a,b)=>a+b.ms,0)/rows.length);
+document.getElementById('kpis').innerHTML=[['Total requests',total.toLocaleString()],['Success rate',okRate+'%'],['Avg response',avg+' ms'],['Active members',members.length+' / '+members.length]].map(k=>`<div class="card kpi"><small>${k[0]}</small><div>${k[1]}</div></div>`).join('');
+const max=Math.max(...days.map(d=>d.n)),W=640,H=220,P=28,pts=days.map((d,i)=>[P+i*(W-2*P)/13,H-P-(d.n/max)*(H-2*P)]);
+document.getElementById('chart').innerHTML=`<polyline fill="none" stroke="var(--acc)" stroke-width="2.5" points="${pts.map(p=>p.join(',')).join(' ')}"/>`+pts.map((p,i)=>`<circle cx="${p[0]}" cy="${p[1]}" r="3.5" fill="var(--acc)"><title>${days[i].d}: ${days[i].n}</title></circle>`+(i%2?'':`<text x="${p[0]}" y="${H-8}" font-size="11" text-anchor="middle" fill="var(--mute)">${days[i].d}</text>`)).join('');
+const cnt={};rows.forEach(r=>cnt[r.s]=(cnt[r.s]||0)+1);const top=Object.entries(cnt).sort((a,b)=>b[1]-a[1]),m=top[0][1];
+document.getElementById('top').innerHTML=top.map(([k,v])=>`<div class="bar"><span><b>${k}</b><em style="font-style:normal;color:var(--mute)">${v}</em></span><i style="width:${v/m*100}%"></i></div>`).join('');
+function draw(){const st=document.getElementById('st').value,q=document.getElementById('q').value.toLowerCase();
+document.getElementById('rows').innerHTML=rows.filter(r=>(!st||(st==='success')===r.ok)&&(r.c+r.s+r.p).toLowerCase().includes(q)).map(r=>`<tr><td>${r.t}</td><td>${r.c}</td><td>${r.s}</td><td>${r.p}</td><td>${r.ms}</td><td class="${r.ok?'ok':'bad'}">${r.ok?'success':'failed'}</td></tr>`).join('')}
+st.onchange=q.oninput=draw;draw();
+</script></body></html>
