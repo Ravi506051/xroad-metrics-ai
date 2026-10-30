@@ -17,3 +17,9 @@ Keep provider API keys on the server side, apply usage limits to public endpoint
 Preserve upstream SWE-agent attribution and license. Test changes in an isolated environment and review tool permissions before allowing repository or shell actions.
 
 For reproducibility, record source versions, environment and dependency versions, configuration, and actual test outputs. Clearly label sample data and illustrative results; never commit secrets or private data.
+
+### Technical Deep Dive
+
+The dashboard should clearly separate demonstration metrics from values collected from a live X-Road environment. Model the metric contract explicitly: metric name, value, unit, source, collection timestamp, and environment. For any AI-generated summary, pass the relevant metric values and time window as structured context, then make it possible to trace each statement back to the dashboard data.
+
+Suggested engineering checks: keep Gemini credentials server-side, apply request limits, validate time ranges and missing metrics, and never expose private operational telemetry in a public demo.
