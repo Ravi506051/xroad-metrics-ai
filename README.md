@@ -29,3 +29,11 @@ Suggested engineering checks: keep Gemini credentials server-side, apply request
 For reliable metric analysis, every displayed value should retain its metric name, unit, source, environment, and collection timestamp. Clearly separate demo values from live measurements.
 
 Before relying on an AI-generated explanation, verify that it references the correct metric and time window. Test missing values, stale measurements, unusual spikes, and empty datasets. Keep provider credentials server-side, apply request limits, and avoid exposing sensitive infrastructure metrics in public deployments.
+
+## Metrics, Data Quality, and Evaluation
+
+- Define each metric, unit, aggregation window, and data source in a shared data dictionary.
+- Validate timestamps, duplicate records, missing values, and geographic fields before analysis.
+- Separate raw observations, derived features, and AI-generated outputs in the processing pipeline.
+- Evaluate predictions against a documented baseline and report only measured results.
+- Include data freshness and known coverage limitations wherever metrics are displayed.
