@@ -23,3 +23,9 @@ For reproducibility, record source versions, environment and dependency versions
 The dashboard should clearly separate demonstration metrics from values collected from a live X-Road environment. Model the metric contract explicitly: metric name, value, unit, source, collection timestamp, and environment. For any AI-generated summary, pass the relevant metric values and time window as structured context, then make it possible to trace each statement back to the dashboard data.
 
 Suggested engineering checks: keep Gemini credentials server-side, apply request limits, validate time ranges and missing metrics, and never expose private operational telemetry in a public demo.
+
+## Data Quality and AI Insight Validation
+
+For reliable metric analysis, every displayed value should retain its metric name, unit, source, environment, and collection timestamp. Clearly separate demo values from live measurements.
+
+Before relying on an AI-generated explanation, verify that it references the correct metric and time window. Test missing values, stale measurements, unusual spikes, and empty datasets. Keep provider credentials server-side, apply request limits, and avoid exposing sensitive infrastructure metrics in public deployments.
