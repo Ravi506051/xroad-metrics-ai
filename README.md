@@ -37,3 +37,10 @@ Before relying on an AI-generated explanation, verify that it references the cor
 - Separate raw observations, derived features, and AI-generated outputs in the processing pipeline.
 - Evaluate predictions against a documented baseline and report only measured results.
 - Include data freshness and known coverage limitations wherever metrics are displayed.
+
+## Data Contract and AI Summary Validation
+
+- Represent each metric with a name, numeric value, unit, source, collection timestamp, and environment.
+- Clearly label dashboard demo data and never mix it with measurements from a live X-Road deployment.
+- Ground AI-generated summaries in the exact metric values and time window, and let readers trace each statement to its source data.
+- Protect operational metadata and credentials; add rate limits to public AI endpoints.
