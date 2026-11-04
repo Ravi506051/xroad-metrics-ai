@@ -27,3 +27,15 @@ Connect authenticated metrics sources, add role-based access, provide metric pro
 
 ## Maintainer
 **Ravi Kumar Rao** · [GitHub](https://github.com/Ravi506051)
+
+## Skills Demonstrated
+
+- Dashboard development
+- metrics visualization
+- AI-assisted interaction
+- API integration
+- responsible handling of operational data.
+
+## Portfolio Context
+
+This project is part of my hands-on learning portfolio. The repository documents the workflow and implementation; results should be reproduced from the included code and data before being used in reports or professional claims.
