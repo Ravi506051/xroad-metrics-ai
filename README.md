@@ -39,3 +39,10 @@ Connect authenticated metrics sources, add role-based access, provide metric pro
 ## Portfolio Context
 
 This project is part of my hands-on learning portfolio. The repository documents the workflow and implementation; results should be reproduced from the included code and data before being used in reports or professional claims.
+
+## Dashboard and AI Integration Notes
+
+- Distinguish demonstration metrics from live operational data in labels and documentation.
+- Validate data shape and timestamps before rendering dashboard summaries or charts.
+- Keep Gemini credentials server-side and handle unavailable model responses gracefully.
+- Document data sources, refresh behaviour, and the limitations of any demo or synthetic values.
